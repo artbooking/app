@@ -1,16 +1,15 @@
 import 'package:artbooking/components/app_icon.dart';
-import 'package:artbooking/router/app_router.gr.dart';
 import 'package:artbooking/state/colors.dart';
 import 'package:artbooking/state/user.dart';
 import 'package:artbooking/utils/fonts.dart';
 import 'package:artbooking/utils/snack.dart';
-import 'package:auto_route/auto_route.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:unicons/unicons.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:vrouter/vrouter.dart';
 
 class Footer extends StatefulWidget {
   final ScrollController? pageScrollController;
@@ -78,13 +77,13 @@ class _FooterState extends State<Footer> {
         textLink(
           label: "about_us".tr(),
           onPressed: () {
-            context.router.push(AboutPageRoute());
+            context.vRouter.push('/about');
           },
         ),
         textLink(
           label: "contact_us".tr(),
           onPressed: () {
-            context.router.push(ContactPageRoute());
+            context.vRouter.push('/contact');
           },
         ),
         textLink(
@@ -105,7 +104,7 @@ class _FooterState extends State<Footer> {
         textLink(
           label: "illustrations".tr(),
           onPressed: () {
-            context.router.push(IllustrationsPageRoute());
+            context.vRouter.push('/illustrations');
           },
         ),
         // textLink(
@@ -183,7 +182,7 @@ class _FooterState extends State<Footer> {
     return textLink(
       label: "privacy".tr(),
       onPressed: () {
-        context.router.push(TosPageRoute());
+        context.vRouter.push('/tos');
       },
     );
   }
@@ -247,7 +246,7 @@ class _FooterState extends State<Footer> {
       label: "tos".tr(),
       heroTag: "tos_hero",
       onPressed: () {
-        context.router.push(TosPageRoute());
+        context.vRouter.push('/tos');
       },
     );
   }
@@ -260,29 +259,23 @@ class _FooterState extends State<Footer> {
         textLink(
             label: "signin".tr(),
             onPressed: () {
-              context.router.push(SigninPageRoute());
+              context.vRouter.push('/signin');
             }),
         textLink(
           label: "signup".tr(),
           onPressed: () {
-            context.router.push(SignupPageRoute());
+            context.vRouter.push('/signup');
           },
         ),
         textLink(
           label: "settings".tr(),
           onPressed: () {
             if (stateUser.isUserConnected) {
-              context.router.push(
-                DashboardPageRoute(
-                  children: [DashSettingsRoute()],
-                ),
-              );
+              context.vRouter.push('/dashboard/Settings');
               return;
             }
 
-            context.router.push(
-              SettingsPageRoute(),
-            );
+            context.vRouter.push('/settings');
           },
         ),
       ],
@@ -297,7 +290,7 @@ class _FooterState extends State<Footer> {
         curve: Curves.easeOut,
       );
     } else if (widget.autoNavToHome) {
-      context.router.push(HomePageRoute());
+      context.vRouter.push('/');
     }
 
     Snack.s(

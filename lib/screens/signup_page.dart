@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:artbooking/components/main_app_bar.dart';
-import 'package:artbooking/router/app_router.gr.dart';
 import 'package:artbooking/utils/app_logger.dart';
 import 'package:artbooking/utils/fonts.dart';
 import 'package:auto_route/auto_route.dart';
@@ -16,6 +15,7 @@ import 'package:artbooking/state/user.dart';
 import 'package:artbooking/utils/snack.dart';
 import 'package:supercharged/supercharged.dart';
 import 'package:unicons/unicons.dart';
+import 'package:vrouter/vrouter.dart';
 
 class SignupPage extends StatefulWidget {
   final void Function(bool isAuthenticated)? onSignupResult;
@@ -134,7 +134,8 @@ class _SignupPageState extends State<SignupPage> {
 
             _emailTimer = Timer(1.seconds, () async {
               final isAvailable =
-                  await (UsersActions.checkEmailAvailability(_email) as FutureOr<bool>);
+                  await (UsersActions.checkEmailAvailability(_email)
+                      as FutureOr<bool>);
               if (!isAvailable) {
                 setState(() {
                   _isCheckingEmail = false;
@@ -301,7 +302,8 @@ class _SignupPageState extends State<SignupPage> {
 
                 _nameTimer = Timer(1.seconds, () async {
                   final isAvailable =
-                      await (UsersActions.checkUsernameAvailability(_username) as FutureOr<bool>);
+                      await (UsersActions.checkUsernameAvailability(_username)
+                          as FutureOr<bool>);
 
                   if (!isAvailable) {
                     setState(() {
@@ -488,7 +490,9 @@ class _SignupPageState extends State<SignupPage> {
       child: Padding(
         padding: const EdgeInsets.only(top: 8.0),
         child: ElevatedButton(
-          onPressed: () => context.router.navigate(SigninPageRoute()),
+          onPressed: () {
+            context.vRouter.push('/signin');
+          },
           child: Opacity(
             opacity: 0.6,
             child: Text(
@@ -570,7 +574,7 @@ class _SignupPageState extends State<SignupPage> {
         return;
       }
 
-      context.router.navigate(HomePageRoute());
+      context.vRouter.push('/');
     } catch (error) {
       appLogger.e(error);
 
@@ -584,7 +588,8 @@ class _SignupPageState extends State<SignupPage> {
   }
 
   Future<bool> valuesAvailabilityCheck() async {
-    final isEmailOk = await (UsersActions.checkEmailAvailability(_email) as FutureOr<bool>);
+    final isEmailOk =
+        await (UsersActions.checkEmailAvailability(_email) as FutureOr<bool>);
     final isNameOk = await UsersActions.checkUsernameAvailability(_username);
     return isEmailOk && isNameOk!;
   }

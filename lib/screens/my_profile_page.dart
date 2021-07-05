@@ -2,7 +2,7 @@ import 'package:artbooking/components/better_avatar.dart';
 import 'package:artbooking/components/form_actions_inputs.dart';
 import 'package:artbooking/components/main_app_bar.dart';
 import 'package:artbooking/components/sheet_header.dart';
-import 'package:artbooking/router/app_router.gr.dart';
+import 'package:artbooking/router/app_router_nav_args.dart';
 import 'package:artbooking/state/colors.dart';
 import 'package:artbooking/state/user.dart';
 import 'package:artbooking/types/user/user_pp.dart';
@@ -26,6 +26,7 @@ import 'package:mime_type/mime_type.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:unicons/unicons.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:vrouter/vrouter.dart';
 
 class MyProfilePage extends StatefulWidget {
   @override
@@ -222,15 +223,24 @@ class _MyProfilePageState extends State<MyProfilePage> {
                     return;
                   }
 
-                  context.router.push(
-                    EditImagePageRoute(
-                      image: ExtendedNetworkImageProvider(
-                        stateUser.userFirestore.pp!.url!.original!,
-                        cache: true,
-                        cacheRawData: true,
-                      ),
-                    ),
+                  AppRouterNavArgs.lastEditImageSelected =
+                      ExtendedNetworkImageProvider(
+                    stateUser.userFirestore.pp!.url!.original!,
+                    cache: true,
+                    cacheRawData: true,
                   );
+
+                  context.vRouter.push('edit/pp');
+
+                  // context.router.push(
+                  //   EditImagePageRoute(
+                  //     image: ExtendedNetworkImageProvider(
+                  //       stateUser.userFirestore.pp!.url!.original!,
+                  //       cache: true,
+                  //       cacheRawData: true,
+                  //     ),
+                  //   ),
+                  // );
                 },
               ),
             ),
@@ -627,15 +637,16 @@ class _MyProfilePageState extends State<MyProfilePage> {
       padding: const EdgeInsets.only(top: 12.0),
       child: TextButton(
         onPressed: () {
-          context.router.push(
-            DashSettingsRouter(
-              children: [
-                DashAccountUpdateRouter(
-                  children: [UpdateUsernamePageRoute()],
-                ),
-              ],
-            ),
-          );
+          context.vRouter.push('/dashboard/settings/update/username');
+          // context.router.push(
+          //   DashSettingsRouter(
+          //     children: [
+          //       DashAccountUpdateRouter(
+          //         children: [UpdateUsernamePageRoute()],
+          //       ),
+          //     ],
+          //   ),
+          // );
         },
         child: Padding(
           padding: const EdgeInsets.symmetric(

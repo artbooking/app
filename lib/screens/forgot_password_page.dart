@@ -3,7 +3,7 @@ import 'package:artbooking/components/fade_in_x.dart';
 import 'package:artbooking/components/fade_in_y.dart';
 import 'package:artbooking/components/loading_animation.dart';
 import 'package:artbooking/components/main_app_bar.dart';
-import 'package:artbooking/router/app_router.gr.dart';
+import 'package:artbooking/screens/home_page.dart';
 import 'package:artbooking/state/colors.dart';
 import 'package:artbooking/utils/app_logger.dart';
 import 'package:artbooking/utils/snack.dart';
@@ -13,6 +13,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:supercharged/supercharged.dart';
 import 'package:unicons/unicons.dart';
+import 'package:vrouter/vrouter.dart';
 
 class ForgotPasswordPage extends StatefulWidget {
   @override
@@ -110,7 +111,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
           ),
           child: TextButton(
             onPressed: () {
-              context.router.navigate(HomePageRoute());
+              context.vRouter.push(HomePage.route);
             },
             child: Opacity(
               opacity: .6,

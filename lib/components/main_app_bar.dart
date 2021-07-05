@@ -2,7 +2,9 @@ import 'package:artbooking/components/app_icon.dart';
 import 'package:artbooking/components/avatar_menu.dart';
 import 'package:artbooking/components/lang_popup_menu_button.dart';
 import 'package:artbooking/components/underlined_button.dart';
-import 'package:artbooking/router/app_router.gr.dart';
+import 'package:artbooking/screens/illustrations_page.dart';
+import 'package:artbooking/screens/search_page.dart';
+import 'package:artbooking/screens/settings_page.dart';
 import 'package:artbooking/state/colors.dart';
 import 'package:artbooking/state/upload_manager.dart';
 import 'package:artbooking/state/user.dart';
@@ -10,10 +12,10 @@ import 'package:artbooking/utils/app_storage.dart';
 import 'package:artbooking/utils/brightness.dart';
 import 'package:artbooking/utils/constants.dart';
 import 'package:artbooking/utils/fonts.dart';
-import 'package:auto_route/auto_route.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:unicons/unicons.dart';
+import 'package:vrouter/vrouter.dart';
 
 class MainAppBar extends StatefulWidget {
   final bool renderSliver;
@@ -192,20 +194,20 @@ class _MainAppBarState extends State<MainAppBar> {
       crossAxisAlignment: WrapCrossAlignment.center,
       children: [
         sectionButton(
-          onPressed: () => context.router.root.push(IllustrationsRouter()),
+          onPressed: () => context.vRouter.push('/illustrations'),
           text: "illustrations".tr(),
         ),
         sectionButton(
-          onPressed: () => context.router.root.push(IllustrationsRouter()),
+          onPressed: () => context.vRouter.push('/books'),
           text: "books".tr(),
         ),
         sectionButton(
-          onPressed: () => context.router.root.push(IllustrationsRouter()),
+          onPressed: () => context.vRouter.push('/contests'),
           text: "contests".tr(),
         ),
         IconButton(
           onPressed: () {
-            context.router.root.push(SearchPageRoute());
+            context.vRouter.push(SearchPage.route);
           },
           color: stateColors.foreground.withOpacity(0.8),
           icon: Icon(UniconsLine.search),
@@ -226,7 +228,7 @@ class _MainAppBarState extends State<MainAppBar> {
           Padding(
             padding: const EdgeInsets.only(right: 12.0),
             child: TextButton(
-              onPressed: () => context.router.push(SigninPageRoute()),
+              onPressed: () => context.vRouter.push('/signin'),
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Text("signin".tr()),
@@ -285,7 +287,7 @@ class _MainAppBarState extends State<MainAppBar> {
         IconButton(
           tooltip: "search".tr(),
           onPressed: () {
-            context.router.root.push(SearchPageRoute());
+            context.vRouter.push(SearchPage.route);
           },
           color: stateColors.foreground.withOpacity(0.8),
           icon: Icon(UniconsLine.search),
@@ -351,7 +353,7 @@ class _MainAppBarState extends State<MainAppBar> {
         child: IconButton(
           tooltip: "search".tr(),
           onPressed: () {
-            context.router.root.push(SearchPageRoute());
+            context.vRouter.push(SearchPage.route);
           },
           color: stateColors.foreground,
           icon: Icon(UniconsLine.search),
@@ -391,46 +393,47 @@ class _MainAppBarState extends State<MainAppBar> {
           fontSize: 18.0,
         ),
       ),
-      itemBuilder: (context) => <PopupMenuItem<PageRouteInfo>>[
+      itemBuilder: (context) => <PopupMenuItem<String>>[
         PopupMenuItem(
-          value: IllustrationsRouter(),
+          value: IllustrationsPage.route,
           child: ListTile(
             leading: Icon(UniconsLine.image),
             title: Text("illustrations".tr()),
           ),
         ),
         PopupMenuItem(
-          value: IllustrationsRouter(),
+          value: IllustrationsPage.route,
           child: ListTile(
             leading: Icon(UniconsLine.apps),
             title: Text("contests".tr()),
           ),
         ),
         PopupMenuItem(
-          value: SettingsPageRoute(),
+          value: SettingsPage.route,
           child: ListTile(
             leading: Icon(UniconsLine.setting),
             title: Text("settings".tr()),
           ),
         ),
       ],
-      onSelected: (PageRouteInfo pageRouteInfo) {
-        if (pageRouteInfo.path != SettingsPageRoute().path) {
-          context.router.root.push(pageRouteInfo);
-          return;
-        }
+      onSelected: (String route) {
+        context.vRouter.push(route);
+        // if (pageRouteInfo.path != SettingsPageRoute().path) {
+        //   context.router.root.push(pageRouteInfo);
+        //   return;
+        // }
 
-        if (stateUser.isUserConnected) {
-          context.router.root.push(
-            DashboardPageRoute(
-              children: [DashSettingsRouter()],
-            ),
-          );
+        // if (stateUser.isUserConnected) {
+        //   context.router.root.push(
+        //     DashboardPageRoute(
+        //       children: [DashSettingsRouter()],
+        //     ),
+        //   );
 
-          return;
-        }
+        //   return;
+        // }
 
-        context.router.root.push(pageRouteInfo);
+        // context.router.root.push(pageRouteInfo);
       },
     );
   }

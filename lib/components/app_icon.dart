@@ -1,6 +1,5 @@
-import 'package:artbooking/router/app_router.gr.dart';
-import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
+import 'package:vrouter/vrouter.dart';
 
 class AppIcon extends StatefulWidget {
   final Function? onTap;
@@ -38,6 +37,6 @@ class _AppIconState extends State<AppIcon> {
   }
 
   void defaultOnTap() {
-    context.router.root.navigate(HomePageRoute());
+    context.vRouter.push('/');
   }
 }

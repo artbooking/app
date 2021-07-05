@@ -1,7 +1,8 @@
 import 'package:artbooking/components/animated_app_icon.dart';
 import 'package:artbooking/components/fade_in_y.dart';
 import 'package:artbooking/components/main_app_bar.dart';
-import 'package:artbooking/router/app_router.gr.dart';
+import 'package:artbooking/screens/home_page.dart';
+import 'package:artbooking/screens/signin_page.dart';
 import 'package:artbooking/state/colors.dart';
 import 'package:artbooking/state/user.dart';
 import 'package:artbooking/utils/app_storage.dart';
@@ -14,6 +15,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:supercharged/supercharged.dart';
 import 'package:unicons/unicons.dart';
+import 'package:vrouter/vrouter.dart';
 
 class DeleteAccountPage extends StatefulWidget {
   @override
@@ -99,7 +101,7 @@ class DeleteAccountPageState extends State<DeleteAccountPage> {
                   top: 45.0,
                 ),
                 child: OutlinedButton(
-                  onPressed: () => context.router.navigate(HomePageRoute()),
+                  onPressed: () => context.vRouter.push(HomePage.route),
                   child: Opacity(
                     opacity: 0.6,
                     child: Text("back".tr()),
@@ -384,7 +386,7 @@ class DeleteAccountPageState extends State<DeleteAccountPage> {
 
       if (userAuth == null) {
         setState(() => isDeleting = false);
-        context.router.navigate(SigninPageRoute());
+        context.vRouter.push(SigninPage.route);
         return;
       }
 

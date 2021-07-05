@@ -12,7 +12,8 @@ import 'package:artbooking/components/text_divider.dart';
 import 'package:artbooking/components/text_rectangle_button.dart';
 import 'package:artbooking/components/underlined_button.dart';
 import 'package:artbooking/components/user_books.dart';
-import 'package:artbooking/router/app_router.gr.dart';
+import 'package:artbooking/router/app_router_nav_args.dart';
+import 'package:artbooking/screens/my_illustrations_page.dart';
 import 'package:artbooking/state/colors.dart';
 import 'package:artbooking/state/upload_manager.dart';
 import 'package:artbooking/types/book.dart';
@@ -22,7 +23,6 @@ import 'package:artbooking/utils/app_logger.dart';
 import 'package:artbooking/utils/constants.dart';
 import 'package:artbooking/utils/fonts.dart';
 import 'package:artbooking/utils/snack.dart';
-import 'package:auto_route/auto_route.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
@@ -31,6 +31,7 @@ import 'package:jiffy/jiffy.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:supercharged/supercharged.dart';
 import 'package:unicons/unicons.dart';
+import 'package:vrouter/vrouter.dart';
 
 /// A Firestore document query reference.
 typedef DocumentMap = DocumentReference<Map<String, dynamic>>;
@@ -43,14 +44,15 @@ typedef SnapshotStreamSubscription
 typedef MapStringIllustration = Map<String, Illustration>;
 
 class MyBookPage extends StatefulWidget {
-  final String bookId;
-  final Book? book;
-
   const MyBookPage({
     Key? key,
-    @PathParam() required this.bookId,
     this.book,
   }) : super(key: key);
+
+  static String path = '/dashboard/books/:bookId';
+
+  final Book? book;
+
   @override
   _MyBookPageState createState() => _MyBookPageState();
 }
@@ -58,6 +60,7 @@ class MyBookPage extends StatefulWidget {
 class _MyBookPageState extends State<MyBookPage> {
   /// The viewing book.
   Book? bookPage;
+  String _bookId = '';
 
   bool _isLoading = false;
   bool _hasError = false;
@@ -102,11 +105,24 @@ class _MyBookPageState extends State<MyBookPage> {
   initState() {
     super.initState();
 
-    if (widget.book == null) {
+    appLogger.d("(initState) MyBookPage");
+    // _bookId = context.vRouter.pathParameters['bookId'] ?? '';
+    _bookId = AppRouterNavArgs.lastBookSelected?.id ?? '';
+
+    appLogger.d("(initState) path parameter: $_bookId");
+    appLogger.d("(initState) widget.book: ${widget.book?.id}");
+    appLogger.d(
+        "(initState) AppRouterNavArgs.lastBookSelected: ${AppRouterNavArgs.lastBookSelected?.id}");
+
+    if (AppRouterNavArgs.lastBookSelected == null) {
+      appLogger.d("wiget.book is null. fetch book & illus");
       fetchBookAndIllustrations();
     } else {
+      appLogger.d("wiget.book is NOT null");
       fetchIllustrationsAndListenToUpdates();
     }
+
+    appLogger.d("(initState) END");
   }
 
   @override
@@ -117,6 +133,9 @@ class _MyBookPageState extends State<MyBookPage> {
 
   @override
   Widget build(BuildContext context) {
+    _bookId = context.vRouter.pathParameters['bookId'] ?? '';
+    appLogger.d("(build) path parameter: $_bookId");
+
     return Scaffold(
       floatingActionButton: fab(),
       body: NotificationListener<ScrollNotification>(
@@ -348,11 +367,7 @@ class _MyBookPageState extends State<MyBookPage> {
           ),
           UnderlinedButton(
             onTap: () {
-              context.router.root.push(
-                DashboardPageRoute(
-                  children: [DashIllustrationsRouter()],
-                ),
-              );
+              context.vRouter.push(MyIllustrationsPage.route);
             },
             child: Text("illustrations_yours_browse".tr()),
           ),
@@ -532,7 +547,7 @@ class _MyBookPageState extends State<MyBookPage> {
               opacity: 0.6,
               child: IconButton(
                 tooltip: "back".tr(),
-                onPressed: context.router.pop,
+                onPressed: context.vRouter.pop,
                 icon: Icon(UniconsLine.arrow_left),
               ),
             ),
@@ -752,14 +767,14 @@ class _MyBookPageState extends State<MyBookPage> {
                   ),
                   tileColor: Color(0xfff55c5c),
                   onTap: () {
-                    context.router.pop();
+                    context.vRouter.pop();
                     deleteIllustration(illustration, index);
                   },
                 ),
                 ListTile(
                   title: Text("cancel".tr()),
                   trailing: Icon(UniconsLine.times),
-                  onTap: context.router.pop,
+                  onTap: context.vRouter.pop,
                 ),
               ],
             ),
@@ -937,18 +952,16 @@ class _MyBookPageState extends State<MyBookPage> {
   }
 
   void fetchBookAndIllustrations() async {
+    appLogger.d("fetchBookAndIllustrations");
     await fetchBook();
     fetchIllustrations();
   }
 
   Future fetchBook() async {
-    setState(() {
-      _isLoading = true;
-    });
+    setState(() => _isLoading = true);
 
     try {
-      final query =
-          FirebaseFirestore.instance.collection('books').doc(widget.bookId);
+      final query = FirebaseFirestore.instance.collection('books').doc(_bookId);
 
       final bookSnap = await query.get();
       final bookData = bookSnap.data();
@@ -1031,11 +1044,12 @@ class _MyBookPageState extends State<MyBookPage> {
   }
 
   void fetchIllustrationsAndListenToUpdates() {
-    bookPage = widget.book;
+    appLogger.d("fetchIllustrationsAndListenToUpdates");
+    // bookPage = widget.book;
+    bookPage = AppRouterNavArgs.lastBookSelected;
     fetchIllustrations();
 
-    final query =
-        FirebaseFirestore.instance.collection('books').doc(widget.bookId);
+    final query = FirebaseFirestore.instance.collection('books').doc(_bookId);
 
     startListenningToData(query);
   }
@@ -1223,12 +1237,13 @@ class _MyBookPageState extends State<MyBookPage> {
   }
 
   void navigateToIllustrationPage(Illustration illustration) {
-    context.router.root.push(
-      IllustrationPageRoute(
-        illustrationId: illustration.id,
-        illustration: illustration,
-      ),
-    );
+    context.vRouter.push('illustrations/${illustration.id}');
+    // context.router.root.push(
+    //   IllustrationPageRoute(
+    //     illustrationId: illustration.id,
+    //     illustration: illustration,
+    //   ),
+    // );
   }
 
   void multiSelectIllustration(Illustration illustration) {
@@ -1350,7 +1365,7 @@ class _MyBookPageState extends State<MyBookPage> {
             Padding(
               padding: const EdgeInsets.only(top: 24.0),
               child: DarkElevatedButton(
-                onPressed: context.router.pop,
+                onPressed: context.vRouter.pop,
                 child: Text(
                   "close".tr(),
                 ),
@@ -1365,7 +1380,7 @@ class _MyBookPageState extends State<MyBookPage> {
   void uploadToThisBook() async {
     await appUploadManager.pickImageAndAddToBook(
       context,
-      bookId: widget.bookId,
+      bookId: _bookId,
     );
   }
 

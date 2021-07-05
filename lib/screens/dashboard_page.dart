@@ -1,17 +1,28 @@
 import 'package:artbooking/components/side_menu_item.dart';
 import 'package:artbooking/components/underlined_button.dart';
 import 'package:artbooking/components/upload_window.dart';
+import 'package:artbooking/screens/my_activity_page.dart';
+import 'package:artbooking/screens/my_books_page.dart';
+import 'package:artbooking/screens/my_illustrations_page.dart';
+import 'package:artbooking/screens/settings_page.dart';
 import 'package:artbooking/state/upload_manager.dart';
-import 'package:artbooking/router/app_router.gr.dart';
 import 'package:artbooking/state/colors.dart';
 import 'package:artbooking/utils/constants.dart';
 import 'package:artbooking/utils/fonts.dart';
-import 'package:auto_route/auto_route.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:unicons/unicons.dart';
+import 'package:vrouter/vrouter.dart';
 
 class DashboardPage extends StatefulWidget {
+  const DashboardPage({
+    Key? key,
+    required this.child,
+  }) : super(key: key);
+
+  /// Nested child inside dashboard.
+  final Widget child;
+
   @override
   _DashboardPageState createState() => _DashboardPageState();
 }
@@ -19,22 +30,22 @@ class DashboardPage extends StatefulWidget {
 class _DashboardPageState extends State<DashboardPage> {
   final _sideMenuItems = <SideMenuItem>[
     SideMenuItem(
-      index: 0,
       iconData: UniconsLine.chart_pie,
-      label: 'Activity',
+      textLabel: 'Activity',
       hoverColor: Colors.red,
+      path: MyActivityPage.path,
     ),
     SideMenuItem(
-      index: 1,
       iconData: UniconsLine.picture,
-      label: 'Illustrations',
+      textLabel: 'Illustrations',
       hoverColor: Colors.red,
+      path: MyIllustrationsPage.route,
     ),
     SideMenuItem(
-      index: 2,
       iconData: UniconsLine.book_alt,
-      label: 'Books',
+      textLabel: 'Books',
       hoverColor: Colors.blue.shade700,
+      path: MyBooksPage.route,
     ),
     // SideMenuItem(
     //   destination: MyGalleriesDeepRoute(),
@@ -55,10 +66,10 @@ class _DashboardPageState extends State<DashboardPage> {
     //   hoverColor: Colors.yellow.shade800,
     // ),
     SideMenuItem(
-      index: 3,
       iconData: UniconsLine.setting,
-      label: 'Settings',
+      textLabel: 'Settings',
       hoverColor: Colors.blueGrey,
+      path: SettingsPage.route,
     ),
   ];
 
@@ -70,41 +81,31 @@ class _DashboardPageState extends State<DashboardPage> {
 
   @override
   Widget build(context) {
-    return AutoTabsScaffold(
-      routes: const [
-        MyActivityPageRoute(),
-        DashIllustrationsRouter(),
-        DashBooksRouter(),
-        DashSettingsRouter(),
-      ],
-      builder: (context, child, animation) {
-        return Material(
-          child: Stack(
+    return Material(
+      child: Stack(
+        children: [
+          Row(
             children: [
-              Row(
-                children: [
-                  buildSidePanel(context, context.tabsRouter),
-                  Expanded(
-                    child: Material(
-                      elevation: 6.0,
-                      child: child,
-                    ),
-                  ),
-                ],
-              ),
-              Positioned(
-                left: 16.0,
-                bottom: 16.0,
-                child: UploadWindow(),
+              buildSidePanel(),
+              Expanded(
+                child: Material(
+                  elevation: 6.0,
+                  child: widget.child,
+                ),
               ),
             ],
           ),
-        );
-      },
+          Positioned(
+            left: 16.0,
+            bottom: 16.0,
+            child: UploadWindow(),
+          ),
+        ],
+      ),
     );
   }
 
-  Widget buildSidePanel(BuildContext context, TabsRouter tabsRouter) {
+  Widget buildSidePanel() {
     if (MediaQuery.of(context).size.width < Constants.maxMobileWidth) {
       return Container();
     }
@@ -117,7 +118,7 @@ class _DashboardPageState extends State<DashboardPage> {
           CustomScrollView(
             slivers: <Widget>[
               topSidePanel(),
-              bodySidePanel(tabsRouter),
+              bodySidePanel(),
             ],
           ),
         ],
@@ -154,7 +155,7 @@ class _DashboardPageState extends State<DashboardPage> {
     // ]);
   }
 
-  Widget bodySidePanel(TabsRouter tabsRouter) {
+  Widget bodySidePanel() {
     return SliverPadding(
       padding: const EdgeInsets.only(
         left: 20.0,
@@ -162,13 +163,13 @@ class _DashboardPageState extends State<DashboardPage> {
       ),
       sliver: SliverList(
           delegate: SliverChildListDelegate.fixed(
-        _sideMenuItems.map((item) {
+        _sideMenuItems.map((sideMenuItem) {
           Color color = stateColors.foreground.withOpacity(0.6);
           Color textColor = stateColors.foreground.withOpacity(0.4);
           FontWeight fontWeight = FontWeight.w600;
 
-          if (tabsRouter.activeIndex == item.index) {
-            color = item.hoverColor;
+          if (context.vRouter.path == sideMenuItem.path) {
+            color = sideMenuItem.hoverColor;
             textColor = stateColors.foreground.withOpacity(0.6);
             fontWeight = FontWeight.w700;
           }
@@ -182,12 +183,12 @@ class _DashboardPageState extends State<DashboardPage> {
               leading: Padding(
                 padding: const EdgeInsets.only(right: 16.0),
                 child: Icon(
-                  item.iconData,
+                  sideMenuItem.iconData,
                   color: color,
                 ),
               ),
               child: Text(
-                item.label,
+                sideMenuItem.textLabel,
                 style: FontsUtils.mainStyle(
                   color: textColor,
                   fontSize: 16.0,
@@ -195,7 +196,7 @@ class _DashboardPageState extends State<DashboardPage> {
                 ),
               ),
               onTap: () {
-                tabsRouter.setActiveIndex(item.index);
+                context.vRouter.push(sideMenuItem.path);
               },
             ),
           );
@@ -214,7 +215,7 @@ class _DashboardPageState extends State<DashboardPage> {
         delegate: SliverChildListDelegate.fixed([
           IconButton(
             tooltip: "home".tr(),
-            onPressed: () => context.router.navigate(HomePageRoute()),
+            onPressed: () => context.vRouter.push('/'),
             icon: Opacity(
               opacity: 0.6,
               child: Icon(UniconsLine.home),

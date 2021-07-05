@@ -1,10 +1,9 @@
-import 'package:artbooking/router/app_router.gr.dart';
+import 'package:artbooking/screens/home_page.dart';
 import 'package:artbooking/types/cloud_func_error.dart';
 import 'package:artbooking/types/update_email_resp.dart';
 import 'package:artbooking/types/user/user_firestore.dart';
 import 'package:artbooking/utils/app_logger.dart';
 import 'package:artbooking/utils/app_storage.dart';
-import 'package:auto_route/auto_route.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cloud_functions/cloud_functions.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -12,6 +11,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:mobx/mobx.dart';
+import 'package:vrouter/vrouter.dart';
 
 part 'user.g.dart';
 
@@ -247,7 +247,7 @@ abstract class StateUserBase with Store {
         return;
       }
 
-      context.router.root.navigate(HomePageRoute());
+      context.vRouter.push(HomePage.route);
     }
   }
 

@@ -9,6 +9,7 @@ import 'package:artbooking/components/popup_menu_item_icon.dart';
 import 'package:artbooking/components/sliver_edge_padding.dart';
 import 'package:artbooking/components/text_rectangle_button.dart';
 import 'package:artbooking/components/themed_dialog.dart';
+import 'package:artbooking/router/app_router_nav_args.dart';
 import 'package:artbooking/screens/my_book_page.dart';
 import 'package:artbooking/state/colors.dart';
 import 'package:artbooking/state/user.dart';
@@ -25,6 +26,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:supercharged/supercharged.dart';
 import 'package:unicons/unicons.dart';
+import 'package:vrouter/vrouter.dart';
 
 /// A stream subscription returning a map withing a query snapshot.
 typedef SnapshotStreamSubscription
@@ -40,6 +42,8 @@ typedef DocumentChangeMap = DocumentChange<Map<String, dynamic>>;
 typedef DocSnapMap = QueryDocumentSnapshot<Map<String, dynamic>>;
 
 class MyBooksPage extends StatefulWidget {
+  static String route = '/dashboard/books';
+
   @override
   _MyBooksPageState createState() => _MyBooksPageState();
 }
@@ -812,26 +816,27 @@ class _MyBooksPageState extends State<MyBooksPage> {
   }
 
   void navigateToBook(Book book) {
-    Navigator.of(context).push(
-      PageRouteBuilder(
-        pageBuilder: (context, animation, secondaryAnimation) {
-          return MyBookPage(
-            bookId: book.id,
-            book: book,
-          );
-        },
-        transitionsBuilder: (context, animation, secondaryAnimation, child) {
-          return child;
-        },
-      ),
-    );
+    AppRouterNavArgs.lastBookSelected = book;
 
-    // context.router.push(
-    //   DashBookPage(
-    //     bookId: book.id,
-    //     book: book,
+    // Navigator.of(context).push(
+    //   PageRouteBuilder(
+    //     pageBuilder: (context, animation, secondaryAnimation) {
+    //       return MyBookPage(
+    //         // bookId: book.id,
+    //         book: book,
+    //       );
+    //     },
+    //     transitionsBuilder: (context, animation, secondaryAnimation, child) {
+    //       return child;
+    //     },
     //   ),
     // );
+
+    context.vRouter.pushNamed(
+      // MyBookPage.path,
+      'my_book',
+      pathParameters: {'bookId': book.id},
+    );
   }
 
   /// When [onTap] event fires on a book.

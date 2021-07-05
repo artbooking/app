@@ -9,7 +9,6 @@ import 'package:artbooking/components/sliver_edge_padding.dart';
 import 'package:artbooking/components/text_rectangle_button.dart';
 import 'package:artbooking/components/themed_dialog.dart';
 import 'package:artbooking/components/user_books.dart';
-import 'package:artbooking/screens/illustration_page.dart';
 import 'package:artbooking/state/upload_manager.dart';
 import 'package:artbooking/state/colors.dart';
 import 'package:artbooking/types/enums.dart';
@@ -41,6 +40,8 @@ typedef DocumentChangeMap = DocumentChange<Map<String, dynamic>>;
 typedef DocSnapMap = QueryDocumentSnapshot<Map<String, dynamic>>;
 
 class MyIllustrationsPage extends StatefulWidget {
+  static String route = '/dashboard/illustrations';
+
   @override
   _MyIllustrationsPageState createState() => _MyIllustrationsPageState();
 }
@@ -676,20 +677,20 @@ class _MyIllustrationsPageState extends State<MyIllustrationsPage> {
   }
 
   void navigateToIllustrationPage(Illustration illustration) {
-    Navigator.of(context).push(
-      PageRouteBuilder(
-        pageBuilder: (context, animation, secondaryAnimation) {
-          return IllustrationPage(
-            illustration: illustration,
-            illustrationId: illustration.id,
-            fromDashboard: true,
-          );
-        },
-        transitionsBuilder: (context, animation, secondaryAnimation, child) {
-          return child;
-        },
-      ),
-    );
+    // Navigator.of(context).push(
+    //   PageRouteBuilder(
+    //     pageBuilder: (context, animation, secondaryAnimation) {
+    //       return IllustrationPage(
+    //         illustration: illustration,
+    //         illustrationId: illustration.id,
+    //         fromDashboard: true,
+    //       );
+    //     },
+    //     transitionsBuilder: (context, animation, secondaryAnimation, child) {
+    //       return child;
+    //     },
+    //   ),
+    // );
 
     /// NOTE: Use auto router when issue #418 is resolved
     /// https://github.com/Milad-Akarie/auto_route_library/issues/418

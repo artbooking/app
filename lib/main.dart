@@ -1,7 +1,5 @@
 import 'package:adaptive_theme/adaptive_theme.dart';
-import 'package:artbooking/router/app_router.gr.dart';
-import 'package:artbooking/router/auth_guard.dart';
-import 'package:artbooking/router/no_auth_guard.dart';
+import 'package:artbooking/router/app_routes.dart';
 import 'package:artbooking/state/colors.dart';
 import 'package:artbooking/state/user.dart';
 import 'package:artbooking/utils/app_logger.dart';
@@ -16,6 +14,7 @@ import 'package:global_configuration/global_configuration.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:supercharged/supercharged.dart';
 import 'package:url_strategy/url_strategy.dart';
+import 'package:vrouter/vrouter.dart';
 
 void main() async {
   LicenseRegistry.addLicense(() async* {
@@ -125,11 +124,11 @@ class AppWithTheme extends StatefulWidget {
 }
 
 class _AppWithThemeState extends State<AppWithTheme> {
-  final appRouter = AppRouter(
-    // adminAuthGuard: AdminAuthGuard(),
-    authGuard: AuthGuard(),
-    noAuthGuard: NoAuthGuard(),
-  );
+  // final appRouter = AppRouter(
+  //   // adminAuthGuard: AdminAuthGuard(),
+  //   authGuard: AuthGuard(),
+  //   noAuthGuard: NoAuthGuard(),
+  // );
 
   @override
   initState() {
@@ -147,7 +146,8 @@ class _AppWithThemeState extends State<AppWithTheme> {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp.router(
+    return VRouter(
+      routes: appRoutes,
       title: 'ArtBooking',
       theme: widget.theme,
       darkTheme: widget.darkTheme,
@@ -155,8 +155,12 @@ class _AppWithThemeState extends State<AppWithTheme> {
       locale: context.locale,
       supportedLocales: context.supportedLocales,
       localizationsDelegates: context.localizationDelegates,
-      routerDelegate: appRouter.delegate(),
-      routeInformationParser: appRouter.defaultRouteParser(),
+      buildTransition: (animation1, animation2, child) {
+        return FadeTransition(
+          opacity: animation1,
+          child: child,
+        );
+      },
     );
   }
 }

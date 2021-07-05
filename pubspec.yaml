@@ -68,6 +68,7 @@ dependencies:
   url_launcher: 6.0.2
   url_strategy: 0.2.0
   verbal_expressions: 1.0.0
+  vrouter: 1.1.4+17
   waterfall_flow: 3.0.1
 
 dev_dependencies:

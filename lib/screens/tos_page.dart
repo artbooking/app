@@ -12,6 +12,8 @@ import 'package:supercharged/supercharged.dart';
 
 /// Terms Of Service.
 class TosPage extends StatefulWidget {
+  static String route = '/tos';
+
   @override
   _TosPageState createState() => _TosPageState();
 }

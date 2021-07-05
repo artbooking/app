@@ -18,6 +18,8 @@ import 'package:unicons/unicons.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class SearchPage extends StatefulWidget {
+  static String route = '/search';
+
   @override
   _SearchPageState createState() => _SearchPageState();
 }

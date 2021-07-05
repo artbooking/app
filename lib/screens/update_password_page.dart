@@ -1,19 +1,19 @@
 import 'package:artbooking/components/animated_app_icon.dart';
 import 'package:artbooking/components/fade_in_y.dart';
 import 'package:artbooking/components/main_app_bar.dart';
-import 'package:artbooking/router/app_router.gr.dart';
+import 'package:artbooking/screens/signin_page.dart';
 import 'package:artbooking/state/colors.dart';
 import 'package:artbooking/state/user.dart';
 import 'package:artbooking/utils/app_logger.dart';
 import 'package:artbooking/utils/app_storage.dart';
 import 'package:artbooking/utils/fonts.dart';
 import 'package:artbooking/utils/snack.dart';
-import 'package:auto_route/auto_route.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:supercharged/supercharged.dart';
 import 'package:unicons/unicons.dart';
+import 'package:vrouter/vrouter.dart';
 
 class UpdatePasswordPage extends StatefulWidget {
   @override
@@ -147,7 +147,7 @@ class _UpdatePasswordPageState extends State<UpdatePasswordPage> {
                     child: Opacity(
                       opacity: 0.8,
                       child: IconButton(
-                        onPressed: context.router.pop,
+                        onPressed: context.vRouter.pop,
                         icon: Icon(UniconsLine.arrow_left),
                       ),
                     ),
@@ -387,7 +387,7 @@ class _UpdatePasswordPageState extends State<UpdatePasswordPage> {
 
       if (userAuth == null) {
         setState(() => isUpdating = false);
-        context.router.navigate(SigninPageRoute());
+        context.vRouter.push(SigninPage.route);
         return;
       }
 

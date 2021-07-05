@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 class IllustrationsPage extends StatefulWidget {
+  static String route = "/illustrations";
+
   @override
   _IllustrationsPageState createState() => _IllustrationsPageState();
 }

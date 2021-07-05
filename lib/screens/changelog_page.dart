@@ -7,6 +7,8 @@ import 'package:unicons/unicons.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class ChangelogPage extends StatefulWidget {
+  static String route = '/changelog';
+
   @override
   _ChangelogPageState createState() => _ChangelogPageState();
 }

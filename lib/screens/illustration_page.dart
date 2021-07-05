@@ -15,30 +15,28 @@ import 'package:artbooking/types/illustration/license.dart';
 import 'package:artbooking/utils/app_logger.dart';
 import 'package:artbooking/utils/fonts.dart';
 import 'package:artbooking/utils/snack.dart';
-import 'package:auto_route/annotations.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:jiffy/jiffy.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:unicons/unicons.dart';
+import 'package:vrouter/vrouter.dart';
 
 class IllustrationPage extends StatefulWidget {
-  /// Illustration's id, used if direct navigation by url.
-  final String illustrationId;
+  const IllustrationPage({
+    Key? key,
+    this.illustration,
+    this.fromDashboard = false,
+  }) : super(key: key);
+
+  static String route = 'illustration';
 
   /// Illustration object, used if navigation from a previous page.
   final Illustration? illustration;
 
   /// True if navigating from dashboard.
   final bool? fromDashboard;
-
-  const IllustrationPage({
-    Key? key,
-    @PathParam('illustrationId') required this.illustrationId,
-    this.illustration,
-    this.fromDashboard = false,
-  }) : super(key: key);
 
   @override
   _IllustrationPageState createState() => _IllustrationPageState();
@@ -54,6 +52,9 @@ class _IllustrationPageState extends State<IllustrationPage> {
   String _newDesc = '';
   String _newSummary = '';
 
+  /// Illustration's id, used if direct navigation by url.
+  String _illustrationId = '';
+
   bool _isEditModeOn = false;
 
   TextEditingController? _nameController;
@@ -66,6 +67,8 @@ class _IllustrationPageState extends State<IllustrationPage> {
   @override
   void initState() {
     super.initState();
+
+    _illustrationId = context.vRouter.pathParameters['illustrationId'] ?? '';
 
     _nameController = TextEditingController();
     _descController = TextEditingController();
@@ -480,7 +483,7 @@ class _IllustrationPageState extends State<IllustrationPage> {
     try {
       final illusSnap = await FirebaseFirestore.instance
           .collection('illustrations')
-          .doc(widget.illustrationId)
+          .doc(_illustrationId)
           .get();
 
       final illusData = illusSnap.data();
@@ -489,7 +492,7 @@ class _IllustrationPageState extends State<IllustrationPage> {
         Snack.e(
           context: context,
           message: "The illustration with the id "
-              "${widget.illustrationId} doesn't exist.",
+              "${_illustrationId} doesn't exist.",
         );
 
         return;

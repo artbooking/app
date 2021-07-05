@@ -12,6 +12,8 @@ import 'package:flutter/material.dart';
 import 'package:supercharged/supercharged.dart';
 
 class HomePage extends StatefulWidget {
+  static String route = '/';
+
   @override
   _HomePageState createState() => _HomePageState();
 }

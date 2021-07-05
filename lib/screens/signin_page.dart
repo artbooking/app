@@ -6,7 +6,6 @@ import 'package:artbooking/components/loading_animation.dart';
 import 'package:artbooking/components/main_app_bar.dart';
 import 'package:artbooking/utils/fonts.dart';
 import 'package:easy_localization/easy_localization.dart';
-import 'package:artbooking/router/app_router.gr.dart';
 import 'package:artbooking/state/colors.dart';
 import 'package:artbooking/state/user.dart';
 import 'package:artbooking/utils/app_logger.dart';
@@ -16,11 +15,14 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:supercharged/supercharged.dart';
 import 'package:unicons/unicons.dart';
+import 'package:vrouter/vrouter.dart';
 
 class SigninPage extends StatefulWidget {
-  final void Function(bool isAuthenticated)? onSigninResult;
-
   const SigninPage({Key? key, this.onSigninResult}) : super(key: key);
+
+  static String route = '/signin';
+
+  final void Function(bool isAuthenticated)? onSigninResult;
 
   @override
   _SigninPageState createState() => _SigninPageState();
@@ -142,7 +144,9 @@ class _SigninPageState extends State<SigninPage> {
       delay: 100.milliseconds,
       beginY: 50.0,
       child: TextButton(
-        onPressed: () => context.router.push(ForgotPasswordPageRoute()),
+        onPressed: () {
+          context.vRouter.push('/forgotpassword');
+        },
         child: Opacity(
           opacity: 0.6,
           child: Row(
@@ -221,9 +225,7 @@ class _SigninPageState extends State<SigninPage> {
         padding: const EdgeInsets.only(top: 8.0),
         child: TextButton(
             onPressed: () {
-              context.router.navigate(
-                SignupPageRoute(onSignupResult: widget.onSigninResult),
-              );
+              context.vRouter.push('/signup');
             },
             child: Opacity(
               opacity: 0.6,
@@ -387,7 +389,7 @@ class _SigninPageState extends State<SigninPage> {
         return;
       }
 
-      context.router.navigate(HomePageRoute());
+      context.vRouter.push('/');
     } catch (error) {
       appLogger.d(error);
 

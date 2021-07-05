@@ -1,18 +1,21 @@
 import 'package:artbooking/components/full_page_loading.dart';
 import 'package:artbooking/components/main_app_bar.dart';
-import 'package:artbooking/router/app_router.dart';
+import 'package:artbooking/screens/my_books_page.dart';
+import 'package:artbooking/screens/my_illustrations_page.dart';
 import 'package:artbooking/screens/signin_page.dart';
 import 'package:artbooking/state/colors.dart';
 import 'package:artbooking/state/user.dart';
 import 'package:artbooking/utils/fonts.dart';
-import 'package:auto_route/auto_route.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:jiffy/jiffy.dart';
 import 'package:unicons/unicons.dart';
+import 'package:vrouter/vrouter.dart';
 
 class MyActivityPage extends StatefulWidget {
+  static String path = '/dashboard/activity';
+
   @override
   _MyActivityPageState createState() => _MyActivityPageState();
 }
@@ -102,7 +105,7 @@ class _MyActivityPageState extends State<MyActivityPage> {
               size: 48.0,
             ),
             count: stats.illustrations!.owned,
-            onTap: () => context.router.navigate(MyIllustrationsPageRoute()),
+            onTap: () => context.vRouter.push(MyIllustrationsPage.route),
           ),
           squareStats(
             title: "books".tr(),
@@ -111,7 +114,7 @@ class _MyActivityPageState extends State<MyActivityPage> {
               size: 48.0,
             ),
             count: stats.books!.owned,
-            onTap: () => context.router.navigate(MyBooksPageRoute()),
+            onTap: () => context.vRouter.push(MyBooksPage.route),
           ),
           squareStats(
             title: "galleries".tr(),
@@ -277,7 +280,8 @@ class _MyActivityPageState extends State<MyActivityPage> {
   }
 
   String getUsedSpace() {
-    final usedBytes = stateUser.userFirestore.stats!.storage!.illustrations!.used!;
+    final usedBytes =
+        stateUser.userFirestore.stats!.storage!.illustrations!.used!;
     var units = 'bytes';
 
     if (usedBytes < 1000) {

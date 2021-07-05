@@ -5,17 +5,18 @@ import 'package:artbooking/components/credit_item.dart';
 import 'package:artbooking/components/footer.dart';
 import 'package:artbooking/components/image_hero.dart';
 import 'package:artbooking/components/main_app_bar.dart';
-import 'package:artbooking/router/app_router.gr.dart';
+import 'package:artbooking/screens/changelog_page.dart';
+import 'package:artbooking/screens/tos_page.dart';
 import 'package:artbooking/state/colors.dart';
 import 'package:artbooking/utils/constants.dart';
 import 'package:artbooking/utils/fonts.dart';
-import 'package:auto_route/auto_route.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:unicons/unicons.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:supercharged/supercharged.dart';
+import 'package:vrouter/vrouter.dart';
 
 class AboutPage extends StatefulWidget {
   @override
@@ -312,14 +313,14 @@ class _AboutPageState extends State<AboutPage> {
             child: ListTile(
               title: Text('changelog'.tr()),
               trailing: Icon(Icons.arrow_forward),
-              onTap: () => context.router.push(ChangelogPageRoute()),
+              onTap: () => context.vRouter.push(ChangelogPage.route),
             ),
           ),
           Card(
             child: ListTile(
               title: Text('tos'.tr()),
               trailing: Icon(Icons.arrow_forward),
-              onTap: () => context.router.push(TosPageRoute()),
+              onTap: () => context.vRouter.push(TosPage.route),
             ),
           ),
           Card(

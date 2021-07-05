@@ -1,8 +1,8 @@
 import 'package:artbooking/components/main_app_bar.dart';
-import 'package:artbooking/router/app_router.gr.dart';
 import 'package:artbooking/state/colors.dart';
-import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
+import 'package:unicons/unicons.dart';
+import 'package:vrouter/vrouter.dart';
 
 class UndefinedPage extends StatefulWidget {
   @override
@@ -94,8 +94,10 @@ class _UndefinedPageState extends State<UndefinedPage> {
 
   Widget navButton() {
     return TextButton.icon(
-      onPressed: () => context.router.navigate(HomePageRoute()),
-      icon: Icon(Icons.arrow_back),
+      onPressed: () {
+        context.vRouter.push('/');
+      },
+      icon: Icon(UniconsLine.arrow_left),
       label: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Text('Return on the way'),
@@ -117,7 +119,7 @@ class _UndefinedPageState extends State<UndefinedPage> {
             ),
             children: [
               TextSpan(
-                text: '${context.router.current.path}',
+                text: '${context.vRouter.path}',
                 style: TextStyle(
                   color: stateColors.secondary,
                   fontWeight: FontWeight.w700,
